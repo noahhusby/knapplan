@@ -17,7 +17,7 @@
 - Noah Husby
 - Anna Gibes
 - Bolin Zhu
-- 
+  
 ## Running the Program
 
 To execute the planner using the default input and output files:
