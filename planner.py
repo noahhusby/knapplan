@@ -95,17 +95,85 @@ def optimize_courses(
         max_hours: int,
 ) -> PlannerResult:
     """
-    Placeholder optimization algorithm.
-    0/1 Knapsack is probably the way to go here? - Noah
-    """
-    # TODO: Replace this with the actual optimization algorithm.
+    Selects courses using bottom-up 0/1 knapsack dynamic programming.
 
-    LOGGER.info("Running placeholder optimization...")
+    DP state:
+        dp[i][h] = the maximum benefit possible using the first i courses
+        with at most h total study hours.
+
+    Recurrence:
+        If course i does not fit, dp[i][h] = dp[i - 1][h].
+        Otherwise:
+            dp[i][h] = max(
+                dp[i - 1][h],
+                dp[i - 1][h - course.hours] + course.benefit
+            )
+
+    The table is then traced backward to recover which courses were selected.
+    If two choices produce the same benefit, the program chooses the one with
+    more selected courses so the output is deterministic and student-friendly.
+    """
+    course_count = len(courses)
+    dp = [[0] * (max_hours + 1) for _ in range(course_count + 1)]
+    selected_count = [[0] * (max_hours + 1) for _ in range(course_count + 1)]
+    keep_course = [[False] * (max_hours + 1) for _ in range(course_count + 1)]
+
+    LOGGER.info(
+        "Running bottom-up 0/1 knapsack for %d courses and %d hours.",
+        course_count,
+        max_hours,
+    )
+
+    for i in range(1, course_count + 1):
+        course = courses[i - 1]
+
+        for h in range(max_hours + 1):
+            without_course = dp[i - 1][h]
+            without_count = selected_count[i - 1][h]
+
+            if course.hours > h:
+                dp[i][h] = without_course
+                selected_count[i][h] = without_count
+            else:
+                with_course = (
+                    dp[i - 1][h - course.hours]
+                    + course.benefit
+                )
+                with_count = (
+                    selected_count[i - 1][h - course.hours]
+                    + 1
+                )
+
+                if (
+                    with_course > without_course
+                    or (
+                        with_course == without_course
+                        and with_count > without_count
+                    )
+                ):
+                    dp[i][h] = with_course
+                    selected_count[i][h] = with_count
+                    keep_course[i][h] = True
+                else:
+                    dp[i][h] = without_course
+                    selected_count[i][h] = without_count
+
+    selected_courses: List[Course] = []
+    remaining_hours = max_hours
+
+    for i in range(course_count, 0, -1):
+        if keep_course[i][remaining_hours]:
+            course = courses[i - 1]
+            selected_courses.append(course)
+            remaining_hours -= course.hours
+
+    selected_courses.reverse()
+    total_hours = sum(course.hours for course in selected_courses)
 
     return PlannerResult(
-        selected_courses=[],
-        total_hours=0,
-        total_benefit=0,
+        selected_courses=selected_courses,
+        total_hours=total_hours,
+        total_benefit=dp[course_count][max_hours],
     )
 
 
