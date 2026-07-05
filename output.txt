@@ -1,0 +1,9 @@
+Selected Courses
+----------------
+class1 (Hours=2, Benefit=10)
+class3 (Hours=5, Benefit=40)
+class4 (Hours=7, Benefit=50)
+class5 (Hours=1, Benefit=5)
+
+Total Hours: 15
+Total Benefit: 105

@@ -1,0 +1,6 @@
+class1 2 10
+class2 3 15
+class3 5 40
+class4 7 50
+class5 1 5
+class6 4 30

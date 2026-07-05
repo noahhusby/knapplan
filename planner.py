@@ -1,5 +1,5 @@
 """
-CS430 - Intelligent Course Planner
+Knapplan - Intelligent Course Planner
 
 Reads course data from ./input.txt, validates the input,
 runs the optimization algorithm,
@@ -272,4 +272,5 @@ def main() -> None:
         print(f"Unexpected Error: {ex}")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     main()
