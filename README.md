@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
 
-# cs430-final-project
+# Knapplan
 
 <p>
   <b>An intelligent course planner. </b>
